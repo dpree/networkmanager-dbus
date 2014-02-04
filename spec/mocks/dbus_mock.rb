@@ -9,12 +9,16 @@ class DBusMock
     case iface
       when /NetworkManager$/
         extend RootMock
-      when /NetworkManager.ActiveConnection$/
-        extend ActiveConnection
+      when /NetworkManager.Connection.Active$/
+        extend ActiveConnectionMock
       when /NetworkManager.Settings$/
         extend SettingsMock
       when /NetworkManager.Device.Wired$/
         extend EthernetDeviceMock
+      when /NetworkManager.Device.Wireless$/
+        extend WirelessDeviceMock
+      when /NetworkManager.AccessPoint$/
+        extend AccessPointMock
       when /NetworkManager.Settings.Connection$/
         extend SettingsConnectionMock
     end

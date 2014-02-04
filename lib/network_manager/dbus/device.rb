@@ -41,13 +41,7 @@ class NetworkManager::DBus::Device
   def dhcp4_config
     @dhcp4_config ||= NetworkManager::DBus::Dhcp4Config.new self['Dhcp4Config']
   end
-  
-  # @return [NetworkManager::DBus::ActiveConnection] con
-  def active_connection
-    @active_connection ||=
-      NetworkManager::DBus::ActiveConnection.new self['ActiveConnection']
-  end
-  
+ 
   #
   # ETHERNET
   #
@@ -59,7 +53,23 @@ class NetworkManager::DBus::Device
   # @return [NetworkManager::DBus::EthernetDevice] dev
   def ethernet
     if ethernet?
-      @ethernet ||= NetworkManager::DBus::EthernetDevice.new(self.object_path)
+      @ethernet = NetworkManager::DBus::EthernetDevice.new(self.object_path)
+      DBusInterface::Connection.clear! #hack to re-establish a connection because ethernet corrupts the device object
+      return @ethernet
+    else
+      nil
+    end
+  end
+
+  def wireless?
+    properties[NM_DEVICE_TYPE__PROPERTY] == NM_DEVICE_TYPE_WIFI
+  end
+
+  def wireless
+    if wireless?
+      @wireless = NetworkManager::DBus::WirelessDevice.new(self.object_path)
+      DBusInterface::Connection.clear! #hack to re-establish a connection because wireless corrupts the device object
+      return @wireless
     else
       nil
     end
