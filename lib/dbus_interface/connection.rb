@@ -42,6 +42,7 @@ class DBusInterface::Connection
   end
   
   def call(method, *args)
+    dbus.default_iface = default_iface
     dbus.send(method, *args)
   end
 
@@ -51,8 +52,7 @@ private
     @dbus ||= begin
       d = DBusInterface.service.object(object_path)
       d.introspect
-      iface = d[default_iface]
-      iface
+      d
     end
   end
 end
