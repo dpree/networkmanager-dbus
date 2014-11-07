@@ -50,9 +50,9 @@ private
   def dbus
     @dbus ||= begin
       d = DBusInterface.service.object(object_path)
-      d.default_iface = default_iface
       d.introspect
-      d
+      iface = d[default_iface]
+      iface
     end
   end
 end
